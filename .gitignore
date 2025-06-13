@@ -1,0 +1,13 @@
+# OS/Editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Zip archives
+*.zip
