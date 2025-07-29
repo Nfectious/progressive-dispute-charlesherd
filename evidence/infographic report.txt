@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infographic Report: Progressive Claim #25-822866566</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Professional Report Blue -->
+    <!-- Application Structure Plan: A single-page, top-to-bottom infographic. The structure is a narrative flow: 1. Header with claim identity. 2. A large, visual timeline as the central narrative spine. 3. A "Core Conflicts" section using side-by-side comparisons to starkly show contradictions. 4. A "Financial Impact" section with charts to quantify the issues. 5. A concluding "Legal Framework" section. This structure was chosen to make a complex, document-heavy dispute easy to understand at a glance, perfect for sharing with regulators or legal counsel. -->
+    <!-- Visualization & Content Choices: 1. Timeline of Contradictions -> Goal: Show change/delay -> Method: HTML/CSS vertical timeline graphic with icons. Justification: Most effective way to visualize the 8-week ordeal and pinpoint key contradictions. 2. Financial Breakdown -> Goal: Compare/Inform -> Viz: Chart.js Bar & Donut charts. Justification: Clearly quantifies the difference between repair cost and proper ACV settlement, and visualizes the out-of-pocket rental costs. 3. Evidence vs. Allegation -> Goal: Compare -> Method: Side-by-side text comparison. Justification: Directly contrasts the policyholder's verified clean VIN reports against Progressive's weak, unsubstantiated claims. CONFIRMATION: NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+            background-color: #f0f4f8;
+        }
+        h1, h2, h3 {
+            font-family: 'Teko', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+            border-left: 4px solid #d1d5db;
+        }
+        .timeline-item:last-child {
+            border-left: 4px solid transparent;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -1rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon {
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <div class="container mx-auto max-w-4xl bg-white p-8 my-8 shadow-2xl">
+
+        <!-- Header -->
+        <header class="text-center border-b-4 border-blue-800 pb-6 mb-10">
+            <h1 class="text-6xl text-blue-900">ANATOMY OF A DISPUTED CLAIM</h1>
+            <h2 class="text-3xl text-slate-600 mt-2">PROGRESSIVE CLAIM #25-822866566 | APRIL 20 - JUNE 7, 2025</h2>
+        </header>
+
+        <!-- Timeline Section -->
+        <section class="mb-12">
+            <h2 class="text-4xl text-center text-blue-900 mb-8">8 WEEKS OF CONTRADICTIONS & DELAYS</h2>
+            <div class="relative">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-slate-300 text-slate-700"><span class="icon">📅</span></div>
+                    <p class="font-bold text-lg text-slate-500">APRIL 22, 2025</p>
+                    <h3 class="text-2xl text-blue-800">CLAIM FILED</h3>
+                    <p class="text-md">Claim filed for 2020 Honda CR-V. Policy has been active since 2024 on this VIN.</p>
+                </div>
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-blue-500 text-white"><span class="icon">✅</span></div>
+                    <p class="font-bold text-lg text-slate-500">MAY 9, 2025</p>
+                    <h3 class="text-2xl text-blue-800">VEHICLE DEEMED "POTENTIAL TOTAL LOSS"</h3>
+                    <p class="text-md">Progressive reassigns claim to a local agent to handle the "potential total loss."</p>
+                </div>
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-red-500 text-white"><span class="icon">❗️</span></div>
+                    <p class="font-bold text-lg text-slate-500">MAY 27, 2025 (AM)</p>
+                    <h3 class="text-2xl text-red-700">CONTRADICTION 1: TOTAL LOSS DENIED</h3>
+                    <p class="text-md">Agent Kim leaves voicemail stating: "It still hasn't been deemed a total loss."</p>
+                </div>
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-green-500 text-white"><span class="icon">📄</span></div>
+                    <p class="font-bold text-lg text-slate-500">MAY 28, 2025 (PM)</p>
+                    <h3 class="text-2xl text-green-700">CONTRADICTION 2: OFFICIAL "TOTAL LOSS" REPORT</h3>
+                    <p class="text-md">Less than 25 hours later, Progressive's appraiser issues official report labeled "TOTAL LOSS". The online claim portal status is updated to "Total loss."</p>
+                </div>
+                 <!-- Timeline Item 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-yellow-500 text-white"><span class="icon">❓</span></div>
+                    <p class="font-bold text-lg text-slate-500">JUNE 5, 2025</p>
+                    <h3 class="text-2xl text-yellow-700">CONTRADICTION 3: "VEHICLE REPAIRED" NOTICE</h3>
+                    <p class="text-md">Policyholder receives email from repair shop about his "recent vehicle repair experience" for the totaled car.</p>
+                </div>
+                <!-- Timeline Item 6 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-red-500 text-white"><span class="icon">🛡️</span></div>
+                    <p class="font-bold text-lg text-slate-500">JUNE 6, 2025</p>
+                    <h3 class="text-2xl text-red-700">CONTRADICTION 4: THE "MISSING VEHICLE" ALLEGATION</h3>
+                    <p class="text-md">After a 7-week delay, Progressive finally provides "evidence" of a missing vehicle report—a vague, undated internal screenshot—contradicting 3 clean VIN reports the policyholder provided on May 21st.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Conflicts Section -->
+        <section class="mb-12">
+            <h2 class="text-4xl text-center text-blue-900 mb-8">CORE CONFLICTS: A PATTERN OF INCONSISTENCY</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Conflict 1: Surety Bond -->
+                <div class="bg-slate-100 p-6 rounded-lg">
+                    <h3 class="text-2xl text-blue-800 border-b-2 border-blue-300 pb-2 mb-4">THE SURETY BOND</h3>
+                    <p class="text-lg mb-2"><strong class="text-red-700">"We don't accept them."</strong><br>- Agent Kim, May 9 Phone Call</p>
+                    <p class="text-lg"><strong class="text-green-700">"We require a surety bond."</strong><br>- Supervisor Matt Perkins, June 5 Email</p>
+                </div>
+                <!-- Conflict 2: Vehicle Ownership -->
+                <div class="bg-slate-100 p-6 rounded-lg">
+                    <h3 class="text-2xl text-blue-800 border-b-2 border-blue-300 pb-2 mb-4">VEHICLE OWNERSHIP</h3>
+                    <p class="text-lg mb-2"><strong class="text-green-700">"Progressive takes possession."</strong><br>- Action on May 20, 2025</p>
+                    <p class="text-lg"><strong class="text-red-700">"Progressive does not own your vehicle."</strong><br>- Supervisor Matt Perkins, June 5 Email</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Evidence Section -->
+        <section class="mb-12">
+            <div class="bg-slate-100 p-6 rounded-lg">
+                <h3 class="text-2xl text-blue-800 border-b-2 border-blue-300 pb-2 mb-4 text-center">EVIDENCE VS. ALLEGATION: THE "MISSING" VEHICLE</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-green-700">POLICYHOLDER'S PROOF (Provided May 21)</p>
+                        <p class="text-lg">3 Independent, Clean VIN Reports from NMVTIS.</p>
+                        <p class="text-3xl mt-2">✅</p>
+                        <p class="font-bold">NO THEFT OR SALVAGE RECORDS FOUND</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xl font-bold text-red-700">PROGRESSIVE'S "PROOF" (Provided June 6)</p>
+                        <p class="text-lg">1 Undated Screenshot from an Internal System.</p>
+                        <p class="text-3xl mt-2">❓</p>
+                        <p class="font-bold">NOT A POLICE OR PRIMARY SOURCE REPORT</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Financial Impact -->
+        <section class="mb-12">
+            <h2 class="text-4xl text-center text-blue-900 mb-8">THE FINANCIAL IMPACT</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-100 p-6 rounded-lg">
+                    <h3 class="text-2xl text-blue-800 text-center mb-4">Settlement Value vs. Repair Cost</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="settlementChart"></canvas>
+                    </div>
+                    <p class="text-center mt-2">Progressive's settlement offer should be based on the vehicle's ACV, not the repair cost.</p>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-lg">
+                    <h3 class="text-2xl text-blue-800 text-center mb-4">Rental Reimbursement</h3>
+                    <div class="chart-container" style="height:250px;">
+                        <canvas id="rentalChart"></canvas>
+                    </div>
+                     <p class="text-center mt-2">Claim delays forced ~$500 in out-of-pocket rental costs beyond the policy maximum.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Legal Framework -->
+        <section class="text-center">
+            <h2 class="text-4xl text-blue-900 mb-4">THE LEGAL FRAMEWORK</h2>
+            <div class="bg-blue-800 text-white p-6 rounded-lg">
+                <h3 class="text-3xl">TCA § 55-3-212</h3>
+                <p class="text-lg mt-2">Tennessee law states an insurer <strong class="bg-yellow-300 text-blue-900 px-2 py-1 rounded">"acquires ownership"</strong> of a vehicle when settling a total loss claim. By taking possession of the vehicle, Progressive initiated this process.</p>
+            </div>
+             <p class="mt-8 text-xl font-bold text-red-700">CONCLUSION: After over 8 weeks of delays and contradictions, a formal complaint has been filed with the Tennessee Department of Commerce and Insurance.</p>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Settlement Chart
+            const settlementCtx = document.getElementById('settlementChart').getContext('2d');
+            new Chart(settlementCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Actual Cash Value (ACV)', 'Repair Estimate'],
+                    datasets: [{
+                        label: 'Amount ($)',
+                        data: [18000, 9309],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(220, 38, 38, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(30, 64, 175, 1)',
+                            'rgba(185, 28, 28, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + (value / 1000) + 'k';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Rental Chart
+            const rentalCtx = document.getElementById('rentalChart').getContext('2d');
+            new Chart(rentalCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Policy Max Paid by Progressive', 'Out-of-Pocket Due to Delays'],
+                    datasets: [{
+                        data: [1200, 500],
+                        backgroundColor: [
+                            'rgba(22, 163, 74, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                             'rgba(21, 128, 61, 1)',
+                             'rgba(185, 28, 28, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                     plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
