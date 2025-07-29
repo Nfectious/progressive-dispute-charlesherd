@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Insurance Claim Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFBF0; /* Warm Off-White */
+            color: #4A4A4A; /* Dark Slate Gray */
+        }
+        .nav-button {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .nav-button.active {
+            background-color: #4A7EBB; /* Steel Blue */
+            color: white;
+        }
+        .nav-button:hover:not(.active) {
+            background-color: #E2E8F0; /* Lighter Cool Gray for hover */
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 30px; /* Space for icon and line */
+            margin-bottom: 20px;
+        }
+        .timeline-item::before { /* Vertical line */
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            bottom: -5px;
+            width: 2px;
+            background-color: #A0AEC0; /* Cool Gray */
+        }
+        .timeline-item:last-child::before {
+            display: none; /* No line after the last item */
+        }
+        .timeline-icon {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #4A7EBB; /* Steel Blue */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            z-index: 1;
+        }
+        .details-toggle {
+            cursor: pointer;
+            color: #4A7EBB; /* Steel Blue */
+            font-weight: 600;
+        }
+        .details-content {
+            display: none;
+            margin-top: 8px;
+            padding-left: 16px;
+            border-left: 2px solid #E2E8F0; /* Lighter Cool Gray */
+        }
+        .details-content.open {
+            display: block;
+        }
+        .table-header {
+            background-color: #E2E8F0; /* Lighter Cool Gray */
+            color: #2D3748; /* Darker Gray for header text */
+        }
+         .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+         }
+         @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+         }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased">
+    <header class="bg-[#4A7EBB] text-white p-4 shadow-md">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold mb-2 sm:mb-0">Insurance Claim Analysis: Case #25-822866566</h1>
+            <p class="text-sm">Policyholder: Charles T. Herd</p>
+        </div>
+    </header>
+
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-2 sm:px-4 py-2">
+            <div class="flex flex-wrap justify-center space-x-1 sm:space-x-2">
+                <button data-target="overview" class="nav-button active text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">📋 Overview</button>
+                <button data-target="timeline" class="nav-button text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">🗓️ Claim Timeline</button>
+                <button data-target="conduct" class="nav-button text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">⚖️ Insurer's Conduct</button>
+                <button data-target="legal" class="nav-button text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">📜 Legal Framework</button>
+                <button data-target="violations" class="nav-button text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">❗ Potential Violations</button>
+                <button data-target="recommendations" class="nav-button text-xs sm:text-sm font-medium py-2 px-2 sm:px-3 rounded-md">💡 Recommended Actions</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 sm:p-6">
+        <section id="overview" class="content-section active bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-4 border-b pb-2">Executive Summary & Key Recommendations</h2>
+            <p class="mb-4 text-gray-700">This interactive application provides an analysis of insurance claim #25-822866566 by Progressive for Mr. Charles T. Herd's 2020 Honda CR-V. The examination reveals significant and ongoing deficiencies in Progressive's conduct, including persistently contradictory information, undue delays, questionable challenges to ownership, blame-shifting, and a failure to communicate clearly and consistently in writing despite repeated requests. This platform aims to break down the complex information into understandable sections.</p>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Key Findings:</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>Persistently contradictory information from multiple Progressive agents (Kim Brooks, Matt Perkins) regarding total loss status, title requirements (especially surety bonds), and necessary documentation[cite: 188, 189, 199].</li>
+                    <li>Unsubstantiated allegations by Progressive (e.g., vehicle "reported missing" by Budget [cite: 12, 40, 82, 111]).</li>
+                    <li>Premature termination of rental car coverage, causing significant hardship and out-of-pocket expenses[cite: 7, 9, 26, 34, 35, 80, 97].</li>
+                    <li>Significant delays and deficient communication practices, including failure to respond to emails and provide written clarifications as requested[cite: 181, 182, 183].</li>
+                    <li>Questionable challenge to Mr. Herd's vehicle ownership despite nearly two years of continuous coverage and premium payments[cite: 16, 47, 62, 63, 86, 118, 133].</li>
+                    <li>Recent communication (May 30, 2025) from Progressive supervisor Matt Perkins (cc Kim Brooks) attempting to shift blame for delays onto Mr. Herd, while simultaneously demanding actions that contradict previous instructions (re: surety bond)[cite: 196, 197, 199].</li>
+                    <li>Actions by Progressive potentially contravene multiple sections of the Tennessee Unfair Claims Settlement Practices Act and may constitute bad faith[cite: 351, 360, 368].</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Primary Recommendations:</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li>Ensure any formal demand letters sent to Progressive are documented with proof of delivery and monitor closely for response within any specified deadlines[cite: 379, 380].</li>
+                    <li>File a comprehensive complaint with the Tennessee Department of Commerce and Insurance (TDCI) immediately, including all recent contradictory communications[cite: 382, 383].</li>
+                    <li>Urgently consult with an attorney specializing in insurance bad faith litigation in Tennessee to address the ongoing harm and assess legal remedies[cite: 384, 385].</li>
+                </ul>
+            </div>
+             <p class="mt-6 text-sm text-gray-600">Navigate through the sections using the menu above to explore detailed information about the claim timeline, specific conduct by the insurer, the relevant legal context, identified violations, and steps for recourse.</p>
+        </section>
+
+        <section id="timeline" class="content-section bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-6 border-b pb-2">🗓️ Detailed Claim Timeline</h2>
+            <p class="mb-6 text-gray-700">This section presents a chronological overview of key events and communications in Mr. Herd's insurance claim, updated with recent events. Understanding the sequence of events is crucial to grasping the full context of the dispute and the insurer's pattern of conduct. Mr. Herd has consistently attempted to communicate and comply, while Progressive has provided conflicting information and caused delays.</p>
+            <div class="space-y-6">
+                
+                <div class="timeline-item">
+                    <div class="timeline-icon">▶️</div>
+                    <div class="ml-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                        <strong class="text-gray-800">April 22, 2025:</strong> Claim initiated; rental vehicle obtained; car taken to Progressive-approved body shop (Caliber Collision)[cite: 318].
+                        <p class="text-sm text-gray-600 mt-1">Initial agent: Lupita Reyes. Stage set for claim processing.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">❗</div>
+                    <div class="ml-2 p-3 bg-red-50 rounded-md border border-red-200">
+                        <strong class="text-gray-800">May 6, 2025:</strong> Text message from Agent Kim Brooks: vehicle is a "total loss"[cite: 319].
+                        <p class="text-sm text-gray-600 mt-1">This communication established a clear expectation of a total loss settlement.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-icon">↪️</div>
+                    <div class="ml-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                        <strong class="text-gray-800">May 19, 2025:</strong> Kim Brooks (Progressive) texts Mr. Herd that they tried to get the car picked up for valuation but it had not been released from the shop (Caliber Collision). Mr. Herd confirms he will release it immediately and does so. (User-provided image: 5-19-25_Texts_With_Kim.jpg)
+                        <p class="text-sm text-gray-600 mt-1">Policyholder promptly complies with request to release vehicle[cite: 320].</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">🔄</div>
+                    <div class="ml-2 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+                        <strong class="text-gray-800">May 20, 2025:</strong> Agent Kim Brooks instructs return of rental car despite unresolved claim. Supervisor Matt Perkins takes over; alleges vehicle "reported missing" without proof[cite: 12, 322, 82, 111]. Mr. Herd requests documentation regarding this allegation from Mr. Perkins via email[cite: 3, 4].
+                        <p class="text-sm text-gray-600 mt-1">Escalation of issues: rental pressure, unsubstantiated allegations, policyholder begins formally requesting documentation of Progressive's claims in writing.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">❓</div>
+                     <div class="ml-2 p-3 bg-yellow-50 rounded-md border border-yellow-200">
+                        <strong class="text-gray-800">Approx. May 20-27, 2025:</strong> Conflicting advice on bonded title from Kim Brooks (not acceptable, per May 9 phone call recalled in user's email [cite: 188, 189]) vs. Matt Perkins (advised obtaining one was necessary on May 21st email [cite: 49, 120] and May 27th email from Matt Perkins [cite: 328]). Progressive questions ownership despite nearly two years of coverage[cite: 16, 47, 62, 86, 118, 133, 324].
+                        <p class="text-sm text-gray-600 mt-1">Contradictory directives from Progressive causing confusion and delay for Mr. Herd[cite: 325].</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">💸</div>
+                    <div class="ml-2 p-3 bg-red-50 rounded-md border border-red-200">
+                        <strong class="text-gray-800">May 21-22, 2025:</strong> Mr. Herd sends multiple emails to Matt Perkins expressing distress over rental termination, lack of settlement, the 17-hour walk home, and out-of-pocket rental charges. Policyholder returns rental car under duress on May 22nd[cite: 326, 144]. Matt Perkins responds via email on May 21st, stating claim is still under investigation, that Progressive established Mr. Herd is not the owner, and recommends obtaining a surety bond[cite: 47, 48, 49, 118, 119, 120]. On May 22nd, Mr. Perkins emails regarding rental charges, explaining they are due to an upgrade chosen by Mr. Herd.
+                        <p class="text-sm text-gray-600 mt-1">Mr. Herd left without transportation, incurring out-of-pocket expenses due to Progressive's actions and unresolved claim[cite: 326]. Progressive maintains claim is under investigation and introduces ownership issue as a barrier[cite: 47, 118].</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-icon">❗</div>
+                    <div class="ml-2 p-3 bg-red-50 rounded-md border border-red-200">
+                        <strong class="text-gray-800">May 27, 2025:</strong> Voicemail from Kim Brooks: vehicle "not declared total loss yet" (contradicts May 6th text from Kim)[cite: 327]. Email from Matt Perkins: policyholder must get title/bond; vehicle being inspected for settlement; offers to tow back if no ownership proof[cite: 328].
+                        <p class="text-sm text-gray-600 mt-1">Peak of contradictory information from Progressive, continued pressure, and unclear vehicle status[cite: 328].</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">📝</div>
+                    <div class="ml-2 p-3 bg-gray-100 rounded-md border border-gray-300">
+                        <strong class="text-gray-800">May 28, 2025:</strong> Progressive's system generates and commits a "TOTAL LOSS Estimate" for the vehicle (Claim #25-822866566-01), listing inspection site as COPART TN KNOXVILLE. (Source: `Estimate_Print_0_0.pdf.pdf` provided by user). Kim Brooks texts Mr. Herd she called and left a message, stating "We're trying to finish up getting the totals together and have a few question." (User-provided image: 5-28-25_Texts_With_Kim.jpg).
+                        <p class="text-sm text-gray-600 mt-1">Official documentation from Progressive portal indicates total loss, while adjuster simultaneously indicates "totals" are still being finalized.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">✉️</div>
+                     <div class="ml-2 p-3 bg-blue-50 rounded-md border border-blue-200">
+                        <strong class="text-gray-800">May 29, 2025:</strong> Mr. Herd accesses the "TOTAL LOSS Estimate" from Progressive's portal. Mr. Herd sends a detailed email to Kim Brooks (subject "Following Up on Claim #25-822866566 - Voicemail/Text, Previous Email, and Surety Bond Contradiction"), cc'd to Matt Perkins, reiterating his request for all communication to be in writing via email[cite: 181, 182, 183]. He references the portal information, requests formal valuation and settlement offer, reimbursement for rental expenses, and critically highlights Kim Brooks' previous contradictory advice from their May 9th phone call where she stated Progressive did *not* accept surety bonds[cite: 185, 186, 187, 188, 189]. User also texts Kim referencing this email. (User-provided image: 5-29-25_Texts_with_Kim.jpg and `5-30-25_cc_not2me_Gmail_from_kim_to_Matt_Perkins...PDF`).
+                        <p class="text-sm text-gray-600 mt-1">Policyholder proactively communicates in writing, documenting contradictions and seeking formal resolution.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">🚫</div>
+                    <div class="ml-2 p-3 bg-orange-50 rounded-md border border-orange-200">
+                        <strong class="text-gray-800">May 30, 2025 (AM):</strong> Kim Brooks texts Mr. Herd (approx. 9:05 AM) stating "the total loss paperwork has not been completed. I need to speak with you about the damage that was related to this accident." (User-described, consistent with `Insurance_Claim_Analysis_2.html` context).
+                        <p class="text-sm text-gray-600 mt-1">Adjuster contradicts "TOTAL LOSS Estimate" PDF, claiming paperwork incomplete and needing to discuss damage, further delaying settlement.</p>
+                    </div>
+                </div>
+                 <div class="timeline-item">
+                    <div class="timeline-icon">🛑</div>
+                    <div class="ml-2 p-3 bg-red-100 rounded-md border border-red-300">
+                        <strong class="text-gray-800">May 30, 2025 (11:18 AM):</strong> Matt Perkins (Claims Supervisor) emails Mr. Herd (cc Kim Brooks), accusing Mr. Herd of delaying the claim by "continuing to send multiple emails without providing these details"[cite: 196]. Perkins demands an accident/damage statement (again) and a surety bond/title in Mr. Herd's name, claiming these are needed to complete the total loss inspection and settlement and can be "completed today"[cite: 197, 198, 199, 200, 201]. He states, "There is no need for further back-and-forth communication"[cite: 202]. This email contains the same accusatory language Mr. Herd reported receiving as a text from Kim Brooks later that day. Kim Brooks also forwarded Mr. Herd's May 29th email to Matt Perkins on this day[cite: 204, 205].
+                        <p class="text-sm text-gray-600 mt-1">Progressive supervisor escalates blame onto policyholder, demands actions that contradict prior advice from adjuster Kim Brooks (re: surety bond [cite: 188, 189]), and attempts to shut down communication, despite Progressive's history of delays and contradictions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conduct" class="content-section bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-4 border-b pb-2">⚖️ Examination of Progressive's Conduct</h2>
+            <p class="mb-6 text-gray-700">This section details identified deficiencies and contradictions in Progressive's handling of the claim. These points illustrate a pattern of behavior that deviates from fair claims processing standards, with recent communications attempting to shift blame to Mr. Herd despite his documented efforts to comply and seek clarity.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">A. Contradictory Statements on Total Loss Status</h3>
+                    <p class="text-gray-700">Agent Kim Brooks stated on May 6th vehicle "has come back as a total loss"[cite: 319], but on May 27th stated it was "not declared a total loss yet"[cite: 327]. This direct contradiction misrepresents facts (TN Code § 56-8-105(1))[cite: 333, 351]. The "TOTAL LOSS Estimate" was then generated by Progressive on May 28th, yet on May 30th, Kim Brooks texted that total loss paperwork was not complete and Matt Perkins demanded further actions to "complete the total loss inspection and settlement"[cite: 198], creating ongoing uncertainty.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">B. Conflicting Advice on Bonded Title & Ownership Issues</h3>
+                    <p class="text-gray-700">Kim Brooks initially informed Mr. Herd during a May 9th phone call that Progressive did not accept surety bonds[cite: 188, 189]. Supervisor Matt Perkins later advised obtaining one was necessary on May 21st [cite: 49, 120] and again forcefully on May 27th [cite: 328] and May 30th[cite: 199]. This contradictory advice caused delay and confusion (TN Code § 56-8-105(1))[cite: 335, 351]. Progressive also questioned Mr. Herd's ownership late in the claim process [cite: 47, 118, 324] despite insuring the vehicle for nearly two years[cite: 16, 62, 86, 133].</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">C. Unsubstantiated Allegation of "Missing" Vehicle</h3>
+                    <p class="text-gray-700">Matt Perkins alleged the vehicle was "reported missing" by Budget but failed to provide proof despite Mr. Herd's repeated requests and evidence to the contrary (multiple clear VIN checks)[cite: 12, 13, 40, 82, 83, 111, 336]. This could be seen as an attempt to refuse payment without reasonable investigation (TN Code § 56-8-105(6))[cite: 337, 351].</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">D. Mishandling of Rental Car Coverage</h3>
+                    <p class="text-gray-700">Mr. Herd was forced to return the rental on May 22nd due to reaching policy limits, despite the claim being unresolved due to Progressive's actions and contradictions[cite: 7, 26, 80, 97, 322, 326]. This caused significant hardship and out-of-pocket expenses[cite: 34, 35, 339], potentially breaching duties of good faith settlement (TN Code § 56-8-105(4), (11))[cite: 339, 351].</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">E. Deficient Communication Practices & Blame Shifting</h3>
+                    <p class="text-gray-700">Multiple agents, conflicting information, significant delays in responses to inquiries, and a failure to honor requests for written communication have characterized this claim[cite: 181, 182, 183, 340], contravening TN Code § 56-8-105(2)[cite: 340, 351]. Most recently, on May 30th, Matt Perkins' email (cc Kim Brooks) unjustly accused Mr. Herd of delaying the process[cite: 196], despite Mr. Herd's documented proactive communication efforts (e.g., email of May 29th) and Progressive's pattern of providing contradictory information.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">F. Questioning of Ownership After Prolonged Coverage</h3>
+                    <p class="text-gray-700">Progressive insured the vehicle for nearly two years, accepting premiums[cite: 16, 62, 86, 133, 341]. Questioning ownership late in the claim process as a barrier to payment appears disingenuous and could be estoppel or misrepresentation (TN Code § 56-8-104(1))[cite: 342, 363].</p>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-semibold text-[#4A7EBB] mt-8 mb-3">Table 2 (from report): Summary of Contradictions and Allegations</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-md">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="p-3 text-left text-sm font-semibold">Date</th>
+                            <th class="p-3 text-left text-sm font-semibold">Progressive Rep.</th>
+                            <th class="p-3 text-left text-sm font-semibold">Initial Statement/Allegation/Demand</th>
+                            <th class="p-3 text-left text-sm font-semibold">Contradicting Statement/Context/Lack of Substantiation</th>
+                            <th class="p-3 text-left text-sm font-semibold">Policyholder Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="p-3 text-sm">5/6/25 & 5/27/25 & 5/28-30/25</td>
+                            <td class="p-3 text-sm">Kim Brooks / Progressive System / Matt Perkins</td>
+                            <td class="p-3 text-sm">5/6: Vehicle is "total loss" (Kim text)[cite: 319]. 5/28: "TOTAL LOSS Estimate" on portal. May 30: Kim text "paperwork not complete."</td>
+                            <td class="p-3 text-sm">5/27: Vehicle "not declared total loss yet" (Kim voicemail)[cite: 327, 344]. May 30: Matt Perkins email demands actions to "complete total loss inspection and settlement"[cite: 198].</td>
+                            <td class="p-3 text-sm">Constant confusion, uncertainty, inability to plan.</td>
+                        </tr>
+                        <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">May 9, May 21, May 27, May 30</td>
+                            <td class="p-3 text-sm">Kim Brooks, Matt Perkins</td>
+                            <td class="p-3 text-sm">Perkins: Bonded title required/will expedite claim (May 21, 27, 30 emails [cite: 49, 120, 199, 328]).</td>
+                            <td class="p-3 text-sm">Kim (May 9 call): Bonded title "not acceptable" by Progressive policy (per user email [cite: 188, 189]). TN Law §55-3-120(c) voids title on total loss, insurer handles salvage.</td>
+                            <td class="p-3 text-sm">Delayed action, confusion, added burden, impossible demands.</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-3 text-sm">5/20/25</td>
+                            <td class="p-3 text-sm">Matt Perkins</td>
+                            <td class="p-3 text-sm">Vehicle was "reported missing" by Budget[cite: 12, 40, 82, 111, 345].</td>
+                            <td class="p-3 text-sm">No documentation provided despite requests; VIN checks clear[cite: 13, 83, 345].</td>
+                            <td class="p-3 text-sm">Unnecessary stress, delay, false accusation.</td>
+                        </tr>
+                         <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">5/20/25 - 5/22/25</td>
+                            <td class="p-3 text-sm">Matt Perkins / Kim Brooks</td>
+                            <td class="p-3 text-sm">Policy covers rental for 30 days, must be returned[cite: 44, 322, 346]. Rental charges due to upgrade[cite: 69, 70, 141].</td>
+                            <td class="p-3 text-sm">Claim unresolved due to Progressive's actions; hardship ignored[cite: 80, 97, 339, 346]. User not informed of upgrade cost implications[cite: 150, 151].</td>
+                            <td class="p-3 text-sm">Loss of transportation, out-of-pocket expenses[cite: 34, 35, 326].</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-3 text-sm">Ongoing</td>
+                            <td class="p-3 text-sm">Matt Perkins / Progressive</td>
+                            <td class="p-3 text-sm">Implied necessity of policyholder to prove ownership / User not owner[cite: 47, 118].</td>
+                            <td class="p-3 text-sm">Insured vehicle for ~2 years, accepted premiums[cite: 16, 62, 86, 133].</td>
+                            <td class="p-3 text-sm">Delay in claim payment, unfair burden.</td>
+                        </tr>
+                         <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">5/30/25</td>
+                            <td class="p-3 text-sm">Matt Perkins (email cc Kim Brooks)</td>
+                            <td class="p-3 text-sm">Accused user of delaying claim; demanded accident statement and surety bond/title "today"; stated "no need for further back-and-forth"[cite: 196, 197, 199, 201, 202].</td>
+                            <td class="p-3 text-sm">User had proactively emailed May 29th seeking clarification and documenting contradictions. Demands contradict prior advice (surety bond [cite: 188, 189]) and TN law re: salvage title.</td>
+                            <td class="p-3 text-sm">Extreme distress, feeling unjustly blamed, attempt to silence valid inquiries.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="legal" class="content-section bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-4 border-b pb-2">📜 Applicable Tennessee Insurance Law & Policyholder Rights</h2>
+            <p class="mb-6 text-gray-700">Mr. Herd's situation is governed by specific Tennessee insurance laws and the terms of his insurance contract. This section outlines key legal provisions relevant to the case, providing context for policyholder rights and insurer obligations.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">A. Tennessee Unfair Claims Settlement Practices Act (<code>TN Code § 56-8-105</code>)</h3>
+                    <p class="text-gray-700">This Act outlines actions by an insurer constituting unfair claims practices[cite: 350]. Progressive's conduct appears to implicate several provisions, including misrepresenting facts, failing to acknowledge communications, not attempting good faith settlement, and unreasonably delaying claims[cite: 351].</p>
+                    <span class="details-toggle" data-details="tn-code-56-8-105-details">Show/Hide Details & Key Provisions ▼</span>
+                    <div id="tn-code-56-8-105-details" class="details-content text-sm text-gray-600">
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li><strong>(1) Knowingly misrepresenting relevant facts or policy provisions:</strong> Evidenced by contradictory statements on total loss and bonded title requirements[cite: 351].</li>
+                            <li><strong>(2) Failing to acknowledge with reasonable promptness pertinent communications:</strong> Demonstrated by ignored emails and failure to provide requested written clarifications[cite: 351].</li>
+                            <li><strong>(4) Not attempting in good faith to effectuate prompt, fair and equitable settlement:</strong> Delays, contradictions, shifting requirements, and premature rental termination contribute to this[cite: 351].</li>
+                            <li><strong>(6) Refusing to pay claims without conducting a reasonable investigation:</strong> "Missing car" allegation without proof, shifting reasons for title demands[cite: 352].</li>
+                            <li><strong>(7) Failing to affirm or deny coverage of claims within a reasonable time:</strong> Vacillation on total loss status and settlement requirements[cite: 352].</li>
+                            <li><strong>(11) Unreasonably delaying the investigation or payment of claims:</strong> Entire timeline reflects significant delays caused by insurer contradictions and shifting demands[cite: 352].</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">B. Tennessee Law on Total Loss Vehicles and Title Issues (<code>TN Code § 55-3-120(c)</code>, <code>§ 55-3-209</code>)</h3>
+                    <p class="text-gray-700">Upon a total loss declaration, the original Certificate of Title is void[cite: 353, 354]. The insurer obtaining the vehicle *shall* obtain a salvage title[cite: 354]. Progressive's demand for Mr. Herd to produce the original title or a bonded title *after* taking possession (vehicle at Copart) and (initially) declaring it a total loss is problematic and appears to misapply or ignore their statutory obligations[cite: 355].</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">C. Insurer's Obligations Regarding Rental Car Coverage and Claim Delays</h3>
+                    <p class="text-gray-700">Rental coverage typically extends until settlement, subject to policy limits[cite: 356]. However, if insurer's unreasonable delays cause rental to exceed limits, it can be argued the insurer should bear additional costs, especially given principles of good faith and prohibitions against unreasonable delays[cite: 357, 358].</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">D. "Bad Faith" in Insurance Claims under Tennessee Law (<code>TN Code § 56-7-105</code>)</h3>
+                    <p class="text-gray-700">An insurer can be found in "bad faith" for refusing to pay a claim without a legitimate basis or failing to respond to a formal demand within 60 days[cite: 359, 360]. Proof requires a valid claim, formal demand, and bad faith refusal[cite: 360]. Penalties can be up to 25% of the claim amount[cite: 361]. The Unfair Claims Settlement Practices Act guides courts in determining bad faith[cite: 362].</p>
+                </div>
+                 <div>
+                    <h3 class="text-lg font-semibold text-gray-800">E. Tennessee Unfair Trade Practices Act (<code>TN Code § 56-8-104</code>)</h3>
+                    <p class="text-gray-700">This Act prohibits unfair or deceptive acts in insurance, including misrepresenting policy terms or conditions[cite: 363]. Contradictory advice on bonded titles or issues with initial underwriting versus later title disputes could fall under this Act[cite: 364].</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">F. Policyholder's Rights Despite Not Having Physical Policy Document</h3>
+                    <p class="text-gray-700">Mr. Herd's insurance ID card, premium payments, and claim correspondence provide substantial evidence of an existing contract[cite: 365]. Insurers are obligated to provide policy copies on request[cite: 366]. The claim should be adjudicated based on established coverage[cite: 367].</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="violations" class="content-section bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-4 border-b pb-2">❗ Assessment of Potential Violations by Progressive</h2>
+            <p class="mb-6 text-gray-700">This section reviews Progressive's actions against Tennessee's legal standards, highlighting multiple potential violations of consumer protection laws and contractual duties, exacerbated by recent communications.</p>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800">A. Violations Against <code>TN Code § 56-8-105</code> (Unfair Claims Settlement Practices) [cite: 368]</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1 pl-4">
+                    <li><strong>§ 56-8-105(1) & (7):</strong> Persistently contradictory statements on total loss status and settlement requirements[cite: 372].</li>
+                    <li><strong>§ 56-8-105(1):</strong> Conflicting advice on bonded title, including demanding it after stating it was unacceptable[cite: 373].</li>
+                    <li><strong>§ 56-8-105(6):</strong> Unsubstantiated "missing" vehicle allegation[cite: 374]; demanding information already ostensibly processed for "TOTAL LOSS Estimate".</li>
+                    <li><strong>§ 56-8-105(3), (4), (11):</strong> Premature rental termination despite insurer-caused delays and ongoing claim processing[cite: 375, 376].</li>
+                    <li><strong>§ 56-8-105(2):</strong> Persistent lack of timely, clear, written communication despite formal requests; attempting to shut down policyholder inquiries[cite: 196, 202].</li>
+                    <li><strong>§ 56-8-105(1):</strong> Questioning ownership after long-term coverage, if used as pretext[cite: 369].</li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800">B. Potential Breach of Contract & Implied Covenant of Good Faith and Fair Dealing</h3>
+                <p class="text-gray-700">Progressive's failures (delays, contradictions, undue burdens, blame-shifting) may constitute a breach of the insurance contract[cite: 369]. The pattern of conduct strongly suggests a departure from the implied covenant of good faith and fair dealing, potentially strengthening a bad faith claim[cite: 370].</p>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800">C. Potential Violations of <code>TN Code § 56-8-104</code> (Unfair Trade Practices) [cite: 371]</h3>
+                <p class="text-gray-700">Misrepresenting policy conditions on title requirements (<code>§ 56-8-104(1)(A)</code>) or deficiencies in initial underwriting now used against Mr. Herd (<code>§ 56-8-104(12)</code>) could be violations[cite: 371]. Attempting to coerce the policyholder into ceasing communication [cite: 202] could also be seen as an unfair practice.</p>
+            </div>
+
+            <h3 class="text-xl font-semibold text-[#4A7EBB] mt-8 mb-3">Table 3 (from report): Potential Violations of TN Unfair Claims Settlement Practices Act</h3>
+             <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-md">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="p-3 text-left text-sm font-semibold">Progressive's Action/Inaction</th>
+                            <th class="p-3 text-left text-sm font-semibold">Relevant TN Code § 56-8-105 Subsection(s)</th>
+                            <th class="p-3 text-left text-sm font-semibold">Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="p-3 text-sm">Contradictory statements on "total loss"</td>
+                            <td class="p-3 text-sm">(1) Misrepresenting facts; (7) Failing to affirm/deny timely[cite: 372].</td>
+                            <td class="p-3 text-sm">Providing conflicting crucial information over weeks.</td>
+                        </tr>
+                        <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">Conflicting advice on bonded title (initially unacceptable, later demanded)</td>
+                            <td class="p-3 text-sm">(1) Misrepresenting facts/policy provisions[cite: 373].</td>
+                            <td class="p-3 text-sm">Telling policyholder it's unacceptable[cite: 188, 189], then demanding it[cite: 49, 120, 199, 328].</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-3 text-sm">Unsubstantiated "missing" vehicle allegation</td>
+                            <td class="p-3 text-sm">(6) Refusing payment without reasonable investigation[cite: 374].</td>
+                            <td class="p-3 text-sm">Making serious allegation without proof[cite: 12, 13, 40, 82, 83, 111].</td>
+                        </tr>
+                        <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">Premature rental termination</td>
+                            <td class="p-3 text-sm">(3) Failing standards for prompt settlement; (4) Not attempting good faith settlement; (11) Unreasonably delaying[cite: 375, 376].</td>
+                            <td class="p-3 text-sm">Cutting off rental when claim unresolved due to insurer actions[cite: 80, 97, 339].</td>
+                        </tr>
+                         <tr class="border-b">
+                            <td class="p-3 text-sm">Deficient communication (ongoing), including blame-shifting</td>
+                            <td class="p-3 text-sm">(2) Failing to acknowledge communications promptly; not acting reasonably in response to communications.</td>
+                            <td class="p-3 text-sm">Ignoring requests for written clarification[cite: 181, 182, 183]; blaming policyholder for delays caused by Progressive[cite: 196].</td>
+                        </tr>
+                        <tr class="border-b bg-gray-50">
+                            <td class="p-3 text-sm">Questioning ownership after ~2 yrs coverage</td>
+                            <td class="p-3 text-sm">(1) Misrepresenting facts/policy provisions (if initial underwriting faulty)[cite: 369].</td>
+                            <td class="p-3 text-sm">Raising ownership as new barrier after long-term premium acceptance[cite: 16, 62, 86, 133].</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 text-sm">Unreasonable overall delay in claim resolution with shifting requirements</td>
+                            <td class="p-3 text-sm">(3) Failing standards for prompt investigation/settlement; (4) Not attempting good faith settlement; (11) Unreasonably delaying.</td>
+                            <td class="p-3 text-sm">Claim ongoing excessively with shifting reasons from Progressive.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="recommendations" class="content-section bg-white p-6 rounded-lg shadow">
+            <h2 class="text-2xl font-bold text-[#4A7EBB] mb-4 border-b pb-2">💡 Recommended Courses of Action</h2>
+            <p class="mb-6 text-gray-700">Given Progressive's documented conduct, Mr. Herd has several avenues to pursue resolution and assert his rights. The following actions are urgently recommended to address the ongoing issues and seek fair treatment.</p>
+            
+            <ol class="list-decimal list-inside space-y-4 text-gray-700">
+                <li>
+                    <strong class="text-gray-800">Formal Demand Letter to Progressive (Follow-up / New Submission):</strong>
+                    Ensure documented proof of delivery for any already-sent demand letter[cite: 379]. Given the May 30th communication from Matt Perkins, consider sending an updated formal demand letter. This letter should:
+                        <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-sm">
+                            <li>Reference specific contradictory communications (e.g., Kim Brooks' May 9th advice on surety bonds vs. Matt Perkins' May 30th demand [cite: 188, 189, 199]).</li>
+                            <li>Clearly refute accusations of causing delays and detail Mr. Herd's attempts to communicate.</li>
+                            <li>Demand immediate written clarification of all outstanding requirements and a firm settlement offer, citing the "TOTAL LOSS Estimate."</li>
+                            <li>Demand reimbursement for all out-of-pocket rental expenses due to insurer delays.</li>
+                            <li>State a firm deadline for a comprehensive written response.</li>
+                        </ul>
+                     Monitor Progressive's response (or lack thereof) closely[cite: 380]. This is a key step, particularly concerning potential bad faith claims which allow a 60-day window for the insurer to respond[cite: 381].
+                </li>
+                <li>
+                    <strong class="text-gray-800">File a Formal Complaint with the Tennessee Department of Commerce and Insurance (TDCI) - URGENT:</strong>
+                    This is a highly recommended and urgent step[cite: 382]. TDCI regulates insurers and investigates consumer complaints. A TDCI investigation can pressure Progressive for fair resolution[cite: 383].
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-sm">
+                        <li>Use the NAIC Online Complaint Form via the TDCI website.</li>
+                        <li>Contact TDCI Consumer Insurance Services for questions: (615) 741-2218 or 1-800-342-4029.</li>
+                        <li>Include all documentation: policy info, all emails, text message screenshots, the "TOTAL LOSS Estimate" PDF, proof of expenses, timeline of events, and your desired resolution. Specifically include Matt Perkins' May 30th email.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong class="text-gray-800">Consult with a Tennessee Attorney Specializing in Insurance Bad Faith - URGENT:</strong>
+                    Highly advisable and urgent due to case complexity, potential bad faith, and significant hardship experienced[cite: 384]. An attorney can:
+                     <ul class="list-disc list-inside ml-6 mt-2 space-y-1 text-sm">
+                        <li>Assess merits for a lawsuit, explain claims (breach of contract, Unfair Claims/Trade Practices Act violations, statutory bad faith)[cite: 385].</li>
+                        <li>Advise on damages, including recovery of out-of-pocket rental costs and potential bad faith penalties.</li>
+                        <li>Represent in negotiations or litigation[cite: 385], and can send a demand letter on Mr. Herd's behalf which may carry more weight.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong class="text-gray-800">Continued Meticulous Record-Keeping:</strong>
+                    Document every interaction with Progressive: save all written items (emails, portal documents, texts), take detailed notes of calls (date, time, person, summary), and retain all document copies[cite: 386]. This is critical.
+                </li>
+                <li>
+                    <strong class="text-gray-800">Further Communication with Progressive:</strong>
+                    Conduct with extreme caution, always in writing if possible[cite: 387]. If an attorney is engaged, direct all communication through them[cite: 388]. If communicating directly, remain formal, reference previous written demands/communications, and always confirm any verbal discussions in writing immediately afterward[cite: 389]. Do not feel pressured by demands for immediate action on complex issues like obtaining a surety bond without proper written clarification of their contradictory stances.
+                </li>
+            </ol>
+            <p class="mt-6 text-gray-700">The evidence strongly suggests Progressive has not acted in good faith[cite: 390]. Mr. Herd is justified in pursuing all available avenues to obtain the full compensation owed, including any applicable penalties.</p>
+        </section>
+    </main>
+
+    <footer class="text-center p-4 mt-8 text-sm text-gray-500 border-t border-gray-200">
+        <p>&copy; <span id="year"></span> Interactive Claim Analyzer. For informational purposes only.</p>
+        <p>Based on analysis of "Insurance Claim Dispute Analysis" report for Claim #25-822866566 and subsequent communications.</p>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const navButtons = document.querySelectorAll('.nav-button');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                contentSections.forEach(section => section.classList.remove('active'));
+                document.getElementById(button.dataset.target).classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        const detailToggles = document.querySelectorAll('.details-toggle');
+        detailToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const detailsContentId = toggle.dataset.details;
+                const detailsContent = document.getElementById(detailsContentId);
+                detailsContent.classList.toggle('open');
+                toggle.textContent = detailsContent.classList.contains('open') ? 
+                    toggle.textContent.replace('▼', '▲') : 
+                    toggle.textContent.replace('▲', '▼');
+            });
+        });
+
+    </script>
+</body>
+</html>
