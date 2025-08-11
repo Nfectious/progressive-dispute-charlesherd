@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Case Analysis: Herd v. Progressive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Professional Legal Blue -->
+    <!-- Application Structure Plan: The SPA is designed with a top-down narrative flow to guide the user through the complexities of the legal case. It starts with a high-level 'Case Overview' dashboard, providing key facts at a glance. The user can then scroll or use the navigation to dive deeper into a 'Chronological Timeline', which interactively highlights key events and their significance. This is followed by the 'Core Legal Arguments' section, which breaks down complex legal concepts into digestible, interactive cards (e.g., Possession vs. Ownership, Prevention Doctrine). The 'Statutory Violations' section uses a clear, structured layout to explicitly link the insurer's actions to specific Tennessee laws, making the case for bad faith tangible. Finally, a 'Strategic Recommendations' section outlines the next steps. This structure was chosen to transform a dense legal document into an educational and persuasive narrative, making it easy for a non-lawyer to understand the situation, the legal basis of the claim, and the proposed course of action. -->
+    <!-- Visualization & Content Choices: 
+        - Goal: Inform/Overview -> Viz: Key Metrics Dashboard (HTML/Tailwind) -> Interaction: None -> Justification: Provides a quick, scannable summary of the case's core facts (claim #, policy #, key dates) to orient the user immediately.
+        - Goal: Change/Sequence -> Viz: Interactive Timeline (HTML/JS) -> Interaction: Hover/Click to reveal detailed information for each event -> Justification: Transforms a static list of dates into a dynamic story, allowing users to explore the escalation of events at their own pace and see how actions and consequences are linked over time.
+        - Goal: Organize/Explain -> Viz: Interactive Legal Concept Cards (HTML/JS) -> Interaction: Click-to-reveal definitions and analysis -> Justification: Breaks down complex legal doctrines (Possession vs. Ownership, Prevention Doctrine) into manageable, non-intimidating chunks. This avoids overwhelming the user with legal jargon.
+        - Goal: Compare/Relate -> Viz: Structured Violations Table (HTML/Tailwind) -> Interaction: Clear side-by-side layout -> Justification: Directly maps the insurer's specific actions to the violated statutes. This visual comparison makes the argument for bad faith clear and compelling. No chart is needed as the data is qualitative.
+        - Library/Method: All interactions are handled with vanilla JavaScript for simplicity and performance. All visuals are built with HTML and styled with Tailwind CSS. Chart.js is included but not used as no quantitative data required charting.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+        .font-serif {
+            font-family: 'Lora', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #d69e2e; /* gold-600 */
+            border-bottom-color: #d69e2e;
+        }
+        .timeline-item .timeline-content {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .timeline-item.active .timeline-content {
+            max-height: 500px;
+            opacity: 1;
+            padding-top: 1rem;
+        }
+        .timeline-dot {
+            transition: background-color 0.3s;
+        }
+        .timeline-item.active .timeline-dot {
+            background-color: #d69e2e; /* gold-600 */
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+        .section-title {
+            border-bottom: 2px solid #cbd5e0;
+            padding-bottom: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+        .tab-button {
+            border: 1px solid transparent;
+            border-bottom-color: #cbd5e0;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            color: #1a365d; /* blue-900 */
+            border-color: #cbd5e0;
+            border-bottom-color: #ffffff;
+            font-weight: 600;
+        }
+        .tab-content {
+            border-top: 2px solid #2a4365;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-serif font-bold text-gray-800">Case Analysis: Herd v. Progressive</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview" class="nav-link px-3 py-2 text-sm font-semibold tracking-wider uppercase text-gray-600 border-b-2 border-transparent">Overview</a>
+                        <a href="#timeline" class="nav-link px-3 py-2 text-sm font-semibold tracking-wider uppercase text-gray-600 border-b-2 border-transparent">Timeline</a>
+                        <a href="#arguments" class="nav-link px-3 py-2 text-sm font-semibold tracking-wider uppercase text-gray-600 border-b-2 border-transparent">Arguments</a>
+                        <a href="#violations" class="nav-link px-3 py-2 text-sm font-semibold tracking-wider uppercase text-gray-600 border-b-2 border-transparent">Violations</a>
+                        <a href="#recommendations" class="nav-link px-3 py-2 text-sm font-semibold tracking-wider uppercase text-gray-600 border-b-2 border-transparent">Strategy</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+
+        <!-- Section 1: Case Overview -->
+        <section id="overview" class="mb-20 scroll-mt-24">
+            <h2 class="text-4xl font-serif font-bold text-gray-900 section-title">Case Overview</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl">This interactive report analyzes the total loss insurance claim of Charles Herd against Progressive Insurance. The core dispute centers on Progressive's demand for a bonded title after they declared the vehicle a total loss and took possession of it, an action contrary to Tennessee law. Explore the timeline, legal arguments, and statutory violations that form the basis of a potential bad faith claim.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6 border-t-4 border-gray-700">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">Claim Details</h3>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Claimant:</span> Charles T. Herd</p>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Insurer:</span> Progressive</p>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Claim #:</span> 25-822866566</p>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Policy #:</span> 930700834</p>
+                </div>
+                <div class="card p-6 border-t-4 border-gray-700">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">Vehicle Information</h3>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Vehicle:</span> 2020 Honda CR-V</p>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Incident Date:</span> April 20, 2025</p>
+                    <p class="text-gray-600"><span class="font-medium text-gray-700">Status:</span> Declared Total Loss</p>
+                </div>
+                <div class="card p-6 bg-blue-50 border-t-4 border-blue-800">
+                    <h3 class="font-semibold text-blue-900 text-lg mb-3">Core Conflict</h3>
+                    <p class="text-blue-800">Progressive demands the insured provide a bonded title, despite having taken possession of the vehicle, making the demand legally and practically impossible for the insured to fulfill.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Interactive Timeline -->
+        <section id="timeline" class="mb-20 scroll-mt-24">
+            <h2 class="text-4xl font-serif font-bold text-gray-900 section-title">Chronological Timeline</h2>
+             <p class="text-lg text-gray-700 mb-10 max-w-4xl">The sequence of events is critical. It shows how Progressive's actions and contradictory instructions created an impossible situation for the insured. Click on each event to expand and see the details and its legal significance.</p>
+            <div id="timeline-container" class="relative border-l-2 border-gray-300 ml-4">
+                <!-- Timeline items will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Core Legal Arguments -->
+        <section id="arguments" class="mb-20 scroll-mt-24">
+            <h2 class="text-4xl font-serif font-bold text-gray-900 section-title">Core Legal Arguments</h2>
+            <p class="text-lg text-gray-700 mb-10 max-w-4xl">The case rests on key legal principles under Tennessee law. These concepts show why Progressive's position is untenable and why their duty to pay the claim is absolute.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-serif font-bold mb-3 text-blue-900">Possession vs. Ownership</h3>
+                    <p class="text-gray-700 mb-4">In law, having physical control (possession) of an item is different from having legal title (ownership). This distinction is crucial.</p>
+                    <div class="bg-slate-50 p-4 rounded-md border border-slate-200">
+                        <p class="font-semibold text-gray-800">In This Case:</p>
+                        <p class="text-gray-700 mt-2">Progressive took **possession** of the vehicle on May 19, 2025, moving it to their salvage yard. While the paper **title** was still in the insured's name, Progressive had functional control. Tennessee's salvage law is triggered by this transfer of control, not just the paper title.</p>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-serif font-bold mb-3 text-blue-900">The Prevention Doctrine</h3>
+                    <p class="text-gray-700 mb-4">A fundamental rule of contract law: You cannot prevent someone from fulfilling a condition and then blame them for not fulfilling it.</p>
+                    <div class="bg-slate-50 p-4 rounded-md border border-slate-200">
+                        <p class="font-semibold text-gray-800">In This Case:</p>
+                        <p class="text-gray-700 mt-2">Progressive demanded a bonded title, a process that requires possession of the vehicle. By taking the vehicle, Progressive made it **impossible** for the insured to comply. Therefore, the condition is legally excused, and Progressive must pay.</p>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-serif font-bold mb-3 text-blue-900">Insurer's Statutory Duty</h3>
+                     <p class="text-gray-700 mb-4">Tennessee Code § 55-3-212(b) places a specific duty on insurance companies in total loss situations.</p>
+                     <div class="bg-slate-50 p-4 rounded-md border border-slate-200">
+                        <p class="font-semibold text-gray-800">In This Case:</p>
+                        <p class="text-gray-700 mt-2">The law requires the insurer to apply for a salvage title once it "acquires ownership" by paying a total loss claim and taking the vehicle. By taking possession with the intent to salvage, Progressive triggered its own legal duty to handle the title paperwork.</p>
+                    </div>
+                </div>
+                 <div class="card p-6">
+                    <h3 class="text-xl font-serif font-bold mb-3 text-blue-900">Impossible Condition</h3>
+                     <p class="text-gray-700 mb-4">A party cannot enforce a contract condition that is impossible to perform, especially when they caused the impossibility.</p>
+                     <div class="bg-slate-50 p-4 rounded-md border border-slate-200">
+                        <p class="font-semibold text-gray-800">In This Case:</p>
+                        <p class="text-gray-700 mt-2">The demand for a bonded title is an impossible condition. The bonded title process (T.C.A. § 55-3-103) is for people who *have* a car but no title. The insured does not have the car. Progressive's demand is a legal absurdity designed to delay payment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Statutory Violations -->
+        <section id="violations" class="mb-20 scroll-mt-24">
+            <h2 class="text-4xl font-serif font-bold text-gray-900 section-title">Unfair Claims Practices & Bad Faith</h2>
+            <p class="text-lg text-gray-700 mb-10 max-w-4xl">Progressive's conduct appears to violate multiple provisions of the Tennessee Unfair Claims Settlement Practices Act (T.C.A. § 56-8-105). These violations are strong evidence of bad faith, which can lead to a 25% penalty under T.C.A. § 56-7-105.</p>
+            <div class="space-y-6">
+                <!-- Violations will be injected here by JS -->
+            </div>
+        </section>
+
+        <!-- Section 5: Recommendations -->
+        <section id="recommendations" class="scroll-mt-24">
+            <h2 class="text-4xl font-serif font-bold text-gray-900 section-title">Strategic Recommendations</h2>
+            <p class="text-lg text-gray-700 mb-10 max-w-4xl">The analysis supports a strong, multi-step approach to resolve this claim and hold the insurer accountable for its actions.</p>
+            <div class="flex flex-col md:flex-row -mx-2">
+                <div id="tabs-container" class="flex md:flex-col md:w-1/4 px-2 mb-4 md:mb-0 -mb-px">
+                    <!-- Tab buttons will be injected here by JS -->
+                </div>
+                <div id="content-container" class="md:w-3/4 px-2">
+                    <!-- Tab content will be injected here by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-gray-400 text-sm">
+            <p>This is an interactive visualization of a legal analysis based on provided documents. It is for informational purposes only and does not constitute legal advice.</p>
+            <p>&copy; 2025 Case Analysis. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timelineData = [
+                { date: 'April 20, 2025', title: 'Single-Vehicle Incident', content: 'The 2020 Honda CR-V is involved in an incident, triggering the insurance claim process.' },
+                { date: 'May 6, 2025', title: 'Vehicle Declared Total Loss', content: 'Progressive adjuster Kim Brooks informs the insured the vehicle is a "total loss." On the same day, she states Progressive does not accept surety bonds, causing the insured to halt efforts to obtain one.' },
+                { date: 'May 19, 2025', title: 'Progressive Takes Possession', content: 'At Progressive\'s direction, the insured authorizes the vehicle\'s release to Copart, Progressive\'s salvage vendor. This is the key date that physical possession and control transfers to the insurer.' },
+                { date: 'May 27, 2025', title: 'Contradictory Instructions', content: 'In a direct reversal, Progressive supervisor Matt Perkins instructs the insured to obtain a bonded title. This creates a direct conflict and an impossible demand.' },
+                { date: 'May 28, 2025', title: 'Official "Total Loss" Estimate', content: 'Progressive\'s appraiser commits the official estimate, explicitly listing the inspection site as "COPART TN KNOXVILLE," documenting that the vehicle is in their agent\'s possession.' },
+                { date: 'June-July 2025', title: 'Delay and "Training Error"', content: 'Progressive doubles down on the bonded title demand while admitting they have no written policy on the matter, calling the initial correct advice a "training error." This pattern of delay and misrepresentation forms the core of the bad faith claim.' }
+            ];
+
+            const violationsData = [
+                { title: 'Misrepresenting Facts (T.C.A. § 56-8-105(1))', content: 'Providing contradictory instructions on accepting surety bonds and falsely claiming the initial correct advice was a "training error" constitutes a knowing misrepresentation of relevant facts and company policy.' },
+                { title: 'Failure to Settle Promptly (T.C.A. § 56-8-105(4))', content: 'After liability became "reasonably clear" on May 6 (the date of the total loss declaration), Progressive failed to attempt a good faith settlement, instead creating an artificial roadblock with the impossible title demand.' },
+                { title: 'Failure to Investigate Reasonably (T.C.A. § 56-8-105(6))', content: 'Progressive refused to pay without conducting a reasonable investigation into its own legal duties. A proper investigation would have revealed that under TN law, the party in possession (Progressive) is responsible for the salvage title.' },
+                { title: 'Failure to Provide Reasonable Explanation (T.C.A. § 56-8-105(12))', content: 'The reason given for non-payment (lack of a bonded title) is not reasonable or accurate because Progressive itself made compliance impossible. This is a pretextual denial.' }
+            ];
+            
+            const recommendationsData = [
+                { 
+                    title: 'Formal Demand', 
+                    content: `
+                        <h4 class="text-xl font-serif font-semibold text-gray-800 mb-3">Step 1: Issue a Formal Demand Letter</h4>
+                        <p class="text-gray-700 mb-4">This is a mandatory first step to preserve the right to seek the 25% bad faith penalty under T.C.A. § 56-7-105. The letter must be sent via certified mail and should:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Be clearly titled as a "FORMAL DEMAND FOR PAYMENT".</li>
+                            <li>Summarize the facts and legal arguments (Prevention Doctrine, T.C.A. § 55-3-212).</li>
+                            <li>Demand a specific sum (ACV of vehicle less deductible, plus out-of-pocket expenses).</li>
+                            <li>Set a firm deadline and state that failure to pay will be considered a formal refusal, triggering the 60-day bad faith clock.</li>
+                        </ul>
+                    `
+                },
+                { 
+                    title: 'File Complaint', 
+                    content: `
+                        <h4 class="text-xl font-serif font-semibold text-gray-800 mb-3">Step 2: File a TDCI Complaint</h4>
+                        <p class="text-gray-700 mb-4">Concurrently, file a formal complaint with the Tennessee Department of Commerce and Insurance (TDCI). This creates an official regulatory record of Progressive's misconduct.</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Use the TDCI's online complaint portal for tracking.</li>
+                            <li>Attach all documentation: the demand letter, policy info, and communications.</li>
+                            <li>Clearly list the specific violations of the Unfair Claims Settlement Practices Act.</li>
+                            <li>This puts pressure on the insurer and creates evidence for potential litigation.</li>
+                        </ul>
+                    `
+                },
+                { 
+                    title: 'Prepare for Litigation', 
+                    content: `
+                        <h4 class="text-xl font-serif font-semibold text-gray-800 mb-3">Step 3: Prepare for Litigation</h4>
+                        <p class="text-gray-700 mb-4">If Progressive fails to comply within the 60-day statutory window after the formal demand, the next step is to file a lawsuit. The suit would include the following claims:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>Breach of Contract:</strong> For failure to pay the claim as required by the policy.</li>
+                            <li><strong>Statutory Bad Faith (T.C.A. § 56-7-105):</strong> Seeking the 25% penalty for the bad faith refusal to pay.</li>
+                            <li><strong>Damages Sought:</strong> The lawsuit would seek the vehicle's ACV, consequential damages (like extra rental costs), the 25% penalty, interest, and attorney's fees.</li>
+                        </ul>
+                    `
+                }
+            ];
+
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item mb-8 cursor-pointer';
+                div.innerHTML = `
+                    <div class="flex items-start">
+                        <div class="timeline-dot w-4 h-4 bg-gray-300 rounded-full -ml-[9px] mt-1 mr-4 z-10 flex-shrink-0"></div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-semibold text-lg text-gray-800">${item.date}</p>
+                                    <h4 class="font-medium text-blue-800">${item.title}</h4>
+                                </div>
+                                <div class="ml-4 text-gray-400 transform transition-transform chevron">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                </div>
+                            </div>
+                            <div class="timeline-content text-gray-700">
+                                <p>${item.content}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.appendChild(div);
+            });
+
+            timelineContainer.addEventListener('click', function(e) {
+                const item = e.target.closest('.timeline-item');
+                if (item) {
+                    const icon = item.querySelector('.chevron svg');
+                    if (item.classList.toggle('active')) {
+                        icon.style.transform = 'rotate(45deg)';
+                    } else {
+                        icon.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
+
+            const violationsContainer = document.querySelector('#violations .space-y-6');
+            violationsData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'card p-6';
+                div.innerHTML = `
+                    <h4 class="text-xl font-serif font-bold text-blue-900 mb-2">${item.title}</h4>
+                    <p class="text-gray-700">${item.content}</p>
+                `;
+                violationsContainer.appendChild(div);
+            });
+            
+            const tabsContainer = document.getElementById('tabs-container');
+            const contentContainer = document.getElementById('content-container');
+
+            recommendationsData.forEach((rec, index) => {
+                const button = document.createElement('button');
+                button.className = 'tab-button w-full text-left px-4 py-3 rounded-t-md font-semibold transition-colors duration-200 text-gray-600';
+                button.textContent = rec.title;
+                button.dataset.index = index;
+                if (index === 0) {
+                    button.classList.add('active');
+                }
+                tabsContainer.appendChild(button);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'tab-content card p-6 rounded-md rounded-tl-none';
+                contentDiv.innerHTML = rec.content;
+                contentDiv.dataset.index = index;
+                if (index !== 0) {
+                    contentDiv.classList.add('hidden');
+                }
+                contentContainer.appendChild(contentDiv);
+            });
+
+            tabsContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const index = e.target.dataset.index;
+                    
+                    tabsContainer.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    contentContainer.querySelectorAll('.tab-content').forEach(content => {
+                        if (content.dataset.index === index) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+            
+            // Smooth scrolling for nav links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Active nav link highlighting on scroll
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav a');
+            window.onscroll = () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 81) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+
+        });
+    </script>
+</body>
+</html>
