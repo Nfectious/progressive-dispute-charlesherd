@@ -1,0 +1,37 @@
+Progressive's actions are highly questionable and appear to contradict Tennessee law regarding total loss claims.
+
+Here is a detailed breakdown of the relevant Tennessee laws and how they apply to this situation.
+
+### The Total Loss and Salvage Title Process in Tennessee
+
+My core belief is. When an insurance company declares a vehicle a total loss and takes possession of it, the responsibility for dealing with the title shifts to them.
+
+* **The Law:** Tennessee Code Annotated (TCA) § 55-3-212 governs what happens to wrecked and salvage vehicles. The law is clear: if an insurance company acquires a vehicle through a damage settlement, **the insurance company must apply for the Salvage Title** from the Tennessee Department of Revenue.
+
+* **How it Works:** Once Progressive declared your car a total loss on May 16th and took possession of it, they effectively acquired it. At that point, the original title is considered void. The insurer is then legally required to handle the paperwork to convert it to a "Salvage Title" before they can legally sell it at their salvage yard.
+
+* **The Contradiction:** Progressive's demand that *you* produce a title—especially after they took the car—is legally backward. They cannot take ownership and possession, declare it a total loss (which voids the original title), and then refuse to pay by demanding you produce a document that is no longer valid and that they are now responsible for creating in its salvage form.
+
+### Unfair Claims Settlement Practices
+
+Progressive's behavior, particularly their conflicting statements and delays, could be considered a violation of Tennessee's Unfair Claims Settlement Practices Act (TCA § 56-8-105). This law prohibits insurers from:
+
+* **Knowingly misrepresenting relevant facts or policy provisions** (TCA § 56-8-105(1)). Telling you on May 6th they don't accept surety titles and then demanding one as a condition of payment after taking your car is a glaring misrepresentation.
+
+* **Not attempting in good faith to effectuate prompt, fair and equitable settlement of claims** where liability is clear (TCA § 56-8-105(4)). They have had your car since May 8th and declared it a loss on May 16th. The delay until August 11th without payment is unreasonable.
+
+* **Failing to affirm or deny coverage within a reasonable time** after proof of loss (TCA § 56-8-105(7)). By taking your car and declaring it a total loss, they have affirmed coverage. Failing to pay is a failure to settle the affirmed claim.
+
+* **Unreasonably delaying the investigation or payment of claims** (TCA § 56-8-105(11)).
+
+The fact that you were paying premiums on the correct VIN establishes that you had an "insurable interest." Progressive accepted your money to cover this exact car against this exact type of loss. Their current actions appear to be an attempt to create an artificial roadblock to avoid paying a valid claim.
+
+### Bad Faith Potential
+
+This situation has strong indicators of **bad faith**. An insurer acts in bad faith when it intentionally or unreasonably delays or denies payment of a claim without a legitimate, debatable reason. Creating an impossible and contradictory paperwork demand fits this pattern.
+
+Under Tennessee law (TCA § 56-7-105), if an insurer is found to have acted in bad faith, a court can order them to pay:
+1.  The full value of your claim (the car's Actual Cash Value).
+2.  A penalty of up to **25% of the claim amount**.
+3.  Your reasonable attorney's fees.
+

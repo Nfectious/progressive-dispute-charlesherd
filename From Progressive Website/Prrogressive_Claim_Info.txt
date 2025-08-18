@@ -1,0 +1,60 @@
+This is my interpretation based on my documentation and policy and believe it lines up with **Tennessee law**, and Progressive’s current position (demanding *I* obtain a bonded/original title after they’ve declared the vehicle a total loss and taken possession) is legally flawed.
+
+---
+
+Tennessee Law — Salvage Title Responsibility
+
+**Tenn. Code Ann. § 55-3-212(b)** is the governing statute on wrecked/salvage vehicles:
+
+> If an insurance company *acquires ownership* of a vehicle as a result of paying a total loss claim, **the insurance company shall apply for a salvage certificate** in its name before it sells or otherwise disposes of the vehicle.
+
+**Key points:**
+
+* “Acquires ownership” in practice means:
+
+  1. Declares the car a total loss, **and**
+  2. Takes possession or exercises control over it.
+* Once that happens, the insurer — **not the insured** — is responsible for applying for the salvage title with the TN Department of Revenue.
+* The **original title becomes void** once the salvage title is issued, or when the vehicle is deemed a total loss and transferred to the insurer.
+
+---
+
+Why Progressive’s Position Is Contradictory Under Law
+
+1. **They Declared Total Loss & Took Possession**
+
+   * May 6, 2025 → “total loss” determination
+   * May 8, 2025 → Progressive physically took your Honda to their salvage yard.
+   * May 16, 2025 → Confirmed total loss.
+
+2. **At That Moment, Title Responsibility Shifted to Them**
+
+   * Under **§ 55-3-212(b)**, once they’ve done both (totaled + taken), they must apply for the salvage title — you can’t be required to produce an original/bonded title after that.
+
+3. **Bonded Title Demand is Impossible**
+
+   * A bonded title can only be issued for a vehicle you physically possess and control — you can’t get one for a car locked in their salvage yard.
+   * They explicitly told you May 6 that they *don’t accept bonded titles*, making the later demand not only contradictory but an *unreasonable barrier to payment*.
+
+4. **Statutory Bad Faith Window Has Passed**
+
+   * **TCA § 56-7-105**: If an insurer fails to pay within 60 days after demand, they can be liable for the claim + **25% penalty + attorney fees**.
+   * Your written demands date back to late May — over 70 days have passed without payment.
+
+---
+
+Legal Framing the Case
+
+* **Violation** of **TCA § 55-3-212(b)** — They have possession of a total loss vehicle but have not applied for the salvage title as required.
+* **Violation** of **TCA § 56-8-105** — Misrepresentation, unreasonable delay, and failure to promptly pay an affirmed claim.
+* **Trigger** of **TCA § 56-7-105** — More than 60 days after written demand, no payment made.
+
+---
+
+What I believe I am owed:
+
+* Immediate payment of Actual Cash Value.
+* 25% statutory bad faith penalty.
+* Attorney’s fees.
+* Rebuttal of Progressive’s bonded title argument with direct citations to § 55-3-212(b).
+* Rental Fees of $950 that I paid out of pocket.

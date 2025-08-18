@@ -1,0 +1,1 @@
+On these emails, the Declarations Page, Payment Schedule, Payment Update, and Notice documents it has sender as Charles B Herd.  On the ones labeled email it has sender as Progressive.
