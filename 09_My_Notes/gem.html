@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Case Analysis: Herd v. Progressive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: The SPA is designed with a top-down narrative flow to guide the user through the complexities of the legal case. It starts with a high-level 'Case Overview' dashboard, providing key facts at a glance. The user can then scroll or use the navigation to dive deeper into a 'Chronological Timeline', which interactively highlights key events and their significance. This is followed by 'Key Issues & Contradictions', which breaks down complex points of conflict into digestible, interactive cards. The 'Statutory Violations' section uses a clear, structured layout to explicitly link the insurer's actions to specific Tennessee laws, making the case for bad faith tangible. Finally, the 'Recommended Action Plan' provides clear, actionable steps. This non-linear, thematic structure was chosen to make the tangled dispute digestible, allowing users to explore the conflict from multiple angles (chronologically, thematically, legally) rather than forcing them through a dense, linear narrative. -->
+    <!-- Visualization & Content Choices: 1. Timeline of Events -> Goal: Show change/delay -> Method: Interactive HTML/CSS timeline -> Interaction: JS toggles to expand/collapse event details. Justification: A timeline is the most effective way to visualize a chronological narrative and highlight the prolonged nature of the dispute. 2. Key Issues -> Goal: Compare/Organize -> Method: Accordion component -> Interaction: JS toggles to reveal detailed analysis of each contradiction. Justification: Accordions allow for a large amount of comparative text to be organized cleanly, reducing cognitive load for the user. 3. Key Metrics -> Goal: Inform -> Method: Animated counters in stat cards -> Interaction: JS-driven number animation on load. Justification: Provides a dynamic and engaging summary of the core figures. No traditional charts (bar, pie) are used as the source data is primarily qualitative and chronological, making a timeline the superior visualization choice. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            /* slate-50 */
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Lora', serif;
+        }
+
+        .active {
+            color: #0ea5e9;
+            /* sky-500 */
+            font-weight: 600;
+        }
+
+        .timeline-item .timeline-content {
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .timeline-item.open .timeline-content {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        .accordion-content {
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .accordion-item.open .accordion-content {
+            max-height: 1000px;
+        }
+
+        .stat-card-value {
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-slate-900">Herd v. Progressive Analysis</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#overview"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-300">Overview</a>
+                        <a href="#timeline"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-300">Timeline</a>
+                        <a href="#issues"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-300">Key
+                            Issues</a>
+                        <a href="#law"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-300">Legal
+                            Standing</a>
+                        <a href="#recommendations"
+                            class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors duration-300">Action
+                            Plan</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="overview" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4 text-center">Case Overview: Claim
+                #25-822866566</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-10">
+                This interactive report analyzes the insurance claim dispute between Charles Herd and Progressive
+                Insurance. The case centers on a total loss claim for a 2020 Honda CR-V, complicated by a broken chain
+                of title. This dashboard highlights the core facts, contradictions, and legal arguments documented in
+                the case file.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="stat-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-sm font-medium text-slate-500">Claim Filed</p>
+                    <p class="stat-card-value text-3xl font-bold text-sky-600 mt-2">Apr 22, 2025</p>
+                </div>
+                <div class="stat-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-sm font-medium text-slate-500">Days Unresolved</p>
+                    <p class="stat-card-value text-3xl font-bold text-red-600 mt-2" data-target="119">0</p>
+                    <p class="text-xs text-slate-400">(as of Aug 18, 2025)</p>
+                </div>
+                <div class="stat-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-sm font-medium text-slate-500">Out-of-Pocket Rental</p>
+                    <p class="stat-card-value text-3xl font-bold text-amber-600 mt-2" data-target="950">$0</p>
+                </div>
+                <div class="stat-card bg-white p-6 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-sm font-medium text-slate-500">Potential Bad Faith Penalty</p>
+                    <p class="stat-card-value text-3xl font-bold text-emerald-600 mt-2" data-target="25">0%</p>
+                    <p class="text-xs text-slate-400">(under T.C.A. § 56-7-105)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8 text-center">Interactive Claim Timeline</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">
+                The handling of this claim is defined by a series of key events, communications, and contradictions.
+                Click on each event to expand and view critical details, revealing how the dispute unfolded over several
+                months.
+            </p>
+            <div class="relative max-w-3xl mx-auto">
+                <div class="absolute left-1/2 -ml-0.5 w-1 h-full bg-slate-200"></div>
+
+                <div class="timeline-item mt-6">
+                    <div class="flex items-center">
+                        <div class="w-1/2"></div>
+                        <div
+                            class="w-10 h-10 bg-sky-500 rounded-full z-10 flex items-center justify-center text-white font-bold">
+                            1</div>
+                        <div class="w-1/2 pl-8">
+                            <div
+                                class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-sky-400 transition-all duration-300 timeline-header">
+                                <p class="font-semibold text-slate-900">April 2025: Incident & Initial Claim</p>
+                                <time class="text-xs text-slate-500">April 20 - 22</time>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="w-1/2 ml-auto pl-8 pt-4">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <p class="text-sm text-slate-700"><strong>April 20:</strong> Single-vehicle accident
+                                    occurs.</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>April 22:</strong> Mr. Herd reports the
+                                    claim. Progressive picks up the vehicle shortly after.</p>
+                                <p class="text-sm text-slate-700 mt-2">Progressive's letter to the state later claims
+                                    Mr. Herd was non-responsive for 16 days, a claim contradicted by text and email
+                                    evidence showing communication and vehicle possession by Progressive during this
+                                    time.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item mt-6">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div
+                                class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-sky-400 transition-all duration-300 timeline-header">
+                                <p class="font-semibold text-slate-900">May 2025: Contradictions Emerge</p>
+                                <time class="text-xs text-slate-500">May 6 - 28</time>
+                            </div>
+                        </div>
+                        <div
+                            class="w-10 h-10 bg-sky-500 rounded-full z-10 flex items-center justify-center text-white font-bold">
+                            2</div>
+                        <div class="w-1/2"></div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="w-1/2 mr-auto pr-8 pt-4">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <p class="text-sm text-slate-700"><strong>May 6:</strong> Agent Kim Brooks declares the
+                                    vehicle a **total loss** via text, and states over the phone that Progressive **does
+                                    not accept surety bonds**.</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>May 19:</strong> Mr. Herd is instructed
+                                    to release the vehicle to Progressive for transport to Copart.</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>May 27:</strong> Supervisor Matt Perkins
+                                    **contradicts** Kim, demanding Mr. Herd obtain a surety bond.</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>May 28:</strong> A voicemail from Kim
+                                    states the car is **not a total loss**, while Mr. Herd finds an official **Total
+                                    Loss Estimate** in his online portal dated the same day.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item mt-6">
+                    <div class="flex items-center">
+                        <div class="w-1/2"></div>
+                        <div
+                            class="w-10 h-10 bg-sky-500 rounded-full z-10 flex items-center justify-center text-white font-bold">
+                            3</div>
+                        <div class="w-1/2 pl-8">
+                            <div
+                                class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-sky-400 transition-all duration-300 timeline-header">
+                                <p class="font-semibold text-slate-900">June 2025: Escalation & Misinformation</p>
+                                <time class="text-xs text-slate-500">June 3 - 23</time>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="w-1/2 ml-auto pl-8 pt-4">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <p class="text-sm text-slate-700"><strong>June 3:</strong> Mr. Herd sends a final demand
+                                    email citing Tennessee law. Progressive responds by again demanding a statement and
+                                    a surety bond.</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>June 6:</strong> Matt Perkins emails a
+                                    screenshot of a "missing vehicle" report. The contact number provided is for
+                                    **Carfax Customer Service**, not a law enforcement or rental agency recovery unit.
+                                </p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>June 23:</strong> Progressive sends a
+                                    letter to the State of Tennessee with a version of events Mr. Herd claims is
+                                    inaccurate.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item mt-6">
+                    <div class="flex items-center">
+                        <div class="w-1/2 pr-8 text-right">
+                            <div
+                                class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-sky-400 transition-all duration-300 timeline-header">
+                                <p class="font-semibold text-slate-900">July-Aug 2025: Stalemate</p>
+                                <time class="text-xs text-slate-500">July - August</time>
+                            </div>
+                        </div>
+                        <div
+                            class="w-10 h-10 bg-sky-500 rounded-full z-10 flex items-center justify-center text-white font-bold">
+                            4</div>
+                        <div class="w-1/2"></div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="w-1/2 mr-auto pr-8 pt-4">
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <p class="text-sm text-slate-700"><strong>July:</strong> Progressive admits they have no
+                                    written policy on bonded titles and that the initial agent's statement was a
+                                    "training error."</p>
+                                <p class="text-sm text-slate-700 mt-2"><strong>August 18:</strong> The vehicle remains
+                                    in Progressive's possession. Mr. Herd is still without a resolution or a vehicle,
+                                    facing significant personal and financial hardship.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="issues" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8 text-center">Key Issues & Contradictions</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">
+                The claim is marked by several key points of conflict and contradictory information provided by
+                Progressive. Explore the core issues below to understand the legal and procedural complexities at the
+                heart of the dispute.
+            </p>
+            <div class="max-w-3xl mx-auto space-y-4 accordion-container">
+                <div class="accordion-item bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <button
+                        class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold">
+                        <span>1. The Surety Bond Reversal</span>
+                        <span
+                            class="accordion-icon text-sky-500 text-2xl transform transition-transform duration-300">&plus;</span>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-600"><strong>Initial Stance (May 6):</strong> Agent Kim Brooks explicitly
+                            told Mr. Herd that Progressive "does not accept surety bonds," causing him to stop his
+                            efforts to obtain one.</p>
+                        <p class="text-slate-600 mt-2"><strong>Reversal (May 27):</strong> Supervisor Matt Perkins
+                            contradicted this, demanding Mr. Herd obtain a surety bond to proceed.</p>
+                        <p class="text-slate-600 mt-2"><strong>Admission (July):</strong> Progressive later admitted
+                            they have no written policy on the matter, calling the initial agent's advice a "training
+                            error."</p>
+                        <p class="mt-3 font-semibold text-sm text-red-700">This contradiction created significant delay
+                            and confusion, forming a potential basis for an unfair claims practice allegation.</p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <button
+                        class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold">
+                        <span>2. Total Loss vs. Not a Total Loss</span>
+                        <span
+                            class="accordion-icon text-sky-500 text-2xl transform transition-transform duration-300">&plus;</span>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-600"><strong>Declaration (May 6):</strong> Agent Kim Brooks confirmed via
+                            text that the vehicle was a "total loss."</p>
+                        <p class="text-slate-600 mt-2"><strong>Contradiction (May 27):</strong> Kim left a voicemail
+                            stating the vehicle "still hasn't been deemed a total loss."</p>
+                        <p class="text-slate-600 mt-2"><strong>Official Document (May 28):</strong> On the very next
+                            day, an official "TOTAL LOSS" estimate appeared in Mr. Herd's online portal.</p>
+                        <p class="mt-3 font-semibold text-sm text-red-700">This conflicting information prevented Mr.
+                            Herd from having a clear understanding of his vehicle's status and the next steps required.
+                        </p>
+                    </div>
+                </div>
+                <div class="accordion-item bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <button
+                        class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold">
+                        <span>3. Possession vs. Responsibility</span>
+                        <span
+                            class="accordion-icon text-sky-500 text-2xl transform transition-transform duration-300">&plus;</span>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-600"><strong>Progressive's Action:</strong> On May 19, Progressive took
+                            possession of the vehicle after declaring it a total loss.</p>
+                        <p class="text-slate-600 mt-2"><strong>Progressive's Demand:</strong> Despite having the
+                            vehicle, Progressive continued to demand that Mr. Herd obtain a title or surety bond.</p>
+                        <p class="text-slate-600 mt-2"><strong>Tennessee Law (T.C.A. § 55-3-212):</strong> When an
+                            insurer takes possession of a total loss vehicle, the original title is voided, and the
+                            responsibility to apply for a salvage title shifts to the insurer.</p>
+                        <p class="mt-3 font-semibold text-sm text-red-700">Progressive's demand is legally and
+                            practically impossible, as Mr. Herd cannot obtain a title for a vehicle he no longer
+                            possesses and whose title has been legally voided by Progressive's own actions.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="law" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8 text-center">Legal Standing & Statutory
+                Violations</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">
+                The handling of this claim appears to conflict with several Tennessee state laws governing insurance
+                practices. The following statutes are central to Mr. Herd's case against Progressive for unfair claims
+                handling and bad faith.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-900">T.C.A. § 56-8-104 & 105</h3>
+                    <p class="text-sm font-semibold text-sky-700 mt-1">Unfair Claims Practices</p>
+                    <p class="text-slate-600 mt-3 text-sm">Prohibits insurers from misrepresenting facts, failing to act
+                        promptly, and not attempting in good faith to effectuate prompt, fair, and equitable
+                        settlements. Progressive's contradictory advice, delays, and shifting requirements may
+                        constitute violations.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-900">T.C.A. § 55-3-212</h3>
+                    <p class="text-sm font-semibold text-sky-700 mt-1">Total Loss & Salvage Title</p>
+                    <p class="text-slate-600 mt-3 text-sm">Once an insurer takes possession of a total loss vehicle, the
+                        original title is void. The insurer is then responsible for obtaining a salvage title.
+                        Progressive's demand for Mr. Herd to obtain a title after taking possession appears to directly
+                        violate this statute.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-900">T.C.A. § 56-7-105</h3>
+                    <p class="text-sm font-semibold text-sky-700 mt-1">Bad Faith Penalty</p>
+                    <p class="text-slate-600 mt-3 text-sm">Allows for a penalty of up to 25% of the claim amount if an
+                        insurer's refusal to pay a claim is found not to be in good faith. The prolonged delay (over 60
+                        days) and pattern of conduct could trigger this penalty.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="recommendations" class="scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8 text-center">Recommended Action Plan</h2>
+            <p class="max-w-3xl mx-auto text-center text-slate-600 mb-12">
+                Based on the analysis of the facts and relevant Tennessee law, the legal burden has shifted to
+                Progressive. The following step-by-step plan is the most effective path toward a resolution for Mr.
+                Herd.
+            </p>
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl border border-slate-200 shadow-lg">
+                <ol class="space-y-6">
+                    <li class="flex items-start">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-sky-500 text-white font-bold rounded-full flex items-center justify-center mr-4">
+                            1</div>
+                        <div>
+                            <h3 class="font-semibold">Cease Title Pursuit</h3>
+                            <p class="text-slate-600 text-sm mt-1">Immediately stop all efforts to obtain a surety bond
+                                or title. This is no longer Mr. Herd's legal responsibility as Progressive has taken
+                                possession of the totaled vehicle.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-sky-500 text-white font-bold rounded-full flex items-center justify-center mr-4">
+                            2</div>
+                        <div>
+                            <h3 class="font-semibold">Issue a Formal Written Demand</h3>
+                            <p class="text-slate-600 text-sm mt-1">Send a formal letter via certified mail to
+                                Progressive's claims management. The letter must cite Tennessee law (specifically T.C.A.
+                                § 55-3-212) and state that the responsibility for the salvage title now lies with
+                                Progressive.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-sky-500 text-white font-bold rounded-full flex items-center justify-center mr-4">
+                            3</div>
+                        <div>
+                            <h3 class="font-semibold">Demand Full Payment & Reimbursement</h3>
+                            <p class="text-slate-600 text-sm mt-1">The letter must demand full settlement for the
+                                vehicle's total loss value, reimbursement for all out-of-pocket expenses (e.g., the $950
+                                rental), and assert a claim for the 25% bad faith penalty under T.C.A. § 56-7-105.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-sky-500 text-white font-bold rounded-full flex items-center justify-center mr-4">
+                            4</div>
+                        <div>
+                            <h3 class="font-semibold">Set a Firm Deadline</h3>
+                            <p class="text-slate-600 text-sm mt-1">Give Progressive a reasonable deadline (e.g., 10-15
+                                business days) to provide a final response and resolution.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-sky-500 text-white font-bold rounded-full flex items-center justify-center mr-4">
+                            5</div>
+                        <div>
+                            <h3 class="font-semibold">File a Formal Complaint</h3>
+                            <p class="text-slate-600 text-sm mt-1">If Progressive fails to comply, immediately file a
+                                formal, detailed complaint with the Tennessee Department of Commerce and Insurance,
+                                including all documentation to demonstrate a pattern of unfair claims practices.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-100 border-t border-slate-200 mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-slate-500">
+            <p>&copy; 2025 Case Analysis. This is an informational tool based on provided documents and is not legal
+                advice.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function animateValue(obj, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    if (obj.dataset.target.includes('.')) {
+                        obj.innerHTML = (progress * (end - start) + start).toFixed(2);
+                    } else if (obj.dataset.target > 1000) {
+                        obj.innerHTML = '$' + value.toLocaleString();
+                    }
+                    else {
+                        obj.innerHTML = value + (obj.dataset.target.includes('%') ? '%' : '');
+                    }
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const targetValue = parseFloat(el.dataset.target.replace(/[^0-9.]/g, ''));
+                        animateValue(el, 0, targetValue, 1500);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.stat-card-value').forEach(el => {
+                observer.observe(el);
+            });
+
+            document.querySelectorAll('.timeline-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.closest('.timeline-item');
+                    item.classList.toggle('open');
+                });
+            });
+
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.closest('.accordion-item');
+                    const icon = header.querySelector('.accordion-icon');
+
+                    item.classList.toggle('open');
+
+                    if (item.classList.contains('open')) {
+                        icon.innerHTML = '&minus;';
+                        icon.classList.add('rotate-180');
+                    } else {
+                        icon.innerHTML = '&plus;';
+                        icon.classList.remove('rotate-180');
+                    }
+                });
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav a');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
