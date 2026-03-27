@@ -33,7 +33,7 @@ This archive documents the full insurance dispute between Charles Travis Herd an
 
 📎 Example References:
 - [Exhibit A – Fake Screenshot](../evidence/exhibit_a_fraudulent_screenshot.png)
-- [Total Loss Estimate](../evidence/estimate_total_loss_05_28.pdf)
+- [Total Loss Estimate](https://github.com/Nfectious/progressive-dispute-charlesherd/blob/2ed23a86cb2e99783f3b46c0722ed03fd5f30917/Total_Loss_Paperwork/Honda_Total_Loss_Paperwork.pdf)
 - [TDCI Complaint Letter](../communications/complaint_to_TDCI.pdf)
 
 ---
